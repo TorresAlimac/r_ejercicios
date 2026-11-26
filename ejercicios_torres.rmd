@@ -1,0 +1,1134 @@
+---
+title: "Ejercicios Torres"
+author: "Torres Camila"
+date: "Noviembre"
+output:
+  pdf_document:
+    toc: true
+    number_sections: true
+---
+
+# Verificar entorno de trabajo
+
+```{r}
+### Verificar versión de R
+R.version.string
+
+### Sistema operativo
+Sys.info()[["sysname"]]
+
+### Verificar si las librerías están instaladas 
+library(ggplot2)
+
+### Y las versiones de los paquetes
+packageVersion("dplyr")
+```
+
+# Ejercicios 3
+
+## Ejercicio 3.1. Vectores y selección
+
+```{r}
+# Generar vectores 
+ids <- c("g1", "g2", "g3", "g4", "g5")
+tam <- c(90, 450, 310, 120, 600)
+
+# Selecciona el tercer identificador.
+ids[3]
+# Recupera los identificadores de genes con longitud de al menos 300.
+ids[tam >= 300]
+# Cuenta cuántos cumplen esa condición sin usar un ciclo.
+sum(tam >= 300)
+```
+
+## Ejercicio 3.2
+
+```{r}
+# Generar vector 
+niveles <- c("A", "M", "A", "B", "M", "M", "B", "A", "B", "B")
+
+# A significa Alto, B bajo y M medio, convertir las entradas del vector a factores
+niveles <- factor(niveles,
+                  levels = c("B", "M", "A"),
+                  labels = c("Bajo", "Medio", "Alto"),
+                  ordered = TRUE)
+niveles
+levels(niveles)
+```
+
+## Ejercicio 3.3
+
+```{r}
+# Construye un data.frame con tres genes, sus longitudes y una etiqueta funcional.
+tabla <- data.frame(
+  gen = c("g1", "g2", "g3"),
+  longitud = c(123, 234, 345),
+  funcion = c("TP53", "BRCA1", "EGFR")
+)
+
+# Recupera únicamente las filas con longitud mayor que 200.
+tabla[tabla$longitud > 200, ]
+
+# Crea una lista que contenga la tabla y el identificador de una muestra.
+resultado <- list(muestra = "M01", genes = tabla)
+resultado$genes
+
+## Explica por qué una matriz de caracteres no sería una buena sustitución para la 
+## tabla cuando queremos conservar longitudes numéricas.
+# Una matriz no sería la mejor opción porque todos sus elementos deben ser del 
+# mismo tipo. Como tenemos nombres y longitudes numéricas, R convertiría todo a 
+# texto y ya no podríamos trabajar directamente con las longitudes como números.
+```
+
+# Ejercicios 4
+
+## Ejercicio 4.1
+
+```{r}
+# Define una variable conteo que represente el número de lecturas asignadas a un gen. 
+# Escribe un condicional que imprima:
+#   "Dato faltante" si el valor es NA.
+#   "Conteo inválido" si es negativo.
+#   "Sin lecturas" si es cero.
+#   "Con lecturas" si es positivo.
+
+# Para NA
+conteo <- NA
+if (is.na(conteo)) {
+  print("Dato faltante")
+} else if (conteo < 0) {
+  print("Conteo inválido")
+} else if (conteo == 0) {
+  print("Sin lecturas")
+} else {
+  print("Con lecturas")
+}
+
+# Para -2
+conteo <- -2
+if (is.na(conteo)) {
+  print("Dato faltante")
+} else if (conteo < 0) {
+  print("Conteo inválido")
+} else if (conteo == 0) {
+  print("Sin lecturas")
+} else {
+  print("Con lecturas")
+}
+
+# Para 0 
+conteo <- 0 
+if (is.na(conteo)) {
+  print("Dato faltante")
+} else if (conteo < 0) {
+  print("Conteo inválido")
+} else if (conteo == 0) {
+  print("Sin lecturas")
+} else {
+  print("Con lecturas")
+}
+
+# Para 15 
+conteo <- 15 
+if (is.na(conteo)) {
+  print("Dato faltante")
+} else if (conteo < 0) {
+  print("Conteo inválido")
+} else if (conteo == 0) {
+  print("Sin lecturas")
+} else {
+  print("Con lecturas")
+}
+```
+
+## Ejercicio 4.2
+
+```{r}
+# Vector
+conteos <- c(8, 0, 13, 5, 0, 21)
+
+# Verificar si todos los conteos son no negativos
+all(conteos >= 0)
+
+# Verificar si existe algún conteo mayor que 20
+any(conteos > 20)
+
+# Obtener las posiciones de los conteos iguales a cero
+which(conteos == 0)
+
+# Clasificar los conteos como Presente o Ausente
+estado <- ifelse(conteos > 0, "Presente", "Ausente")
+estado
+```
+
+## Ejercicio 4.3
+
+```{r}
+# Vector
+secuencias <- c("ATG", "ATGCGT", "AATTCCGG", "CG")
+
+# Guardar las longitudes usando un ciclo for
+longitudes <- numeric(length(secuencias))
+
+for (i in seq_along(secuencias)) {
+  longitudes[i] <- nchar(secuencias[i])
+}
+
+# Clasificar las secuencias según su longitud
+clasificacion <- ifelse(longitudes < 5, "Corta", "Larga")
+
+# Mostrar ambos vectores
+longitudes
+clasificacion
+```
+
+## Ejercicio 4.4
+
+```{r}
+# Crear una secuencia vacía
+secuencia <- ""
+
+# Agregar una "A" hasta alcanzar 8 nucleótidos
+while (nchar(secuencia) < 8) {
+  secuencia <- paste0(secuencia, "A")
+}
+
+# Mostrar la secuencia final
+secuencia
+```
+
+# Ejercicios 5
+
+## Ejercicio 5.1
+
+```{r}
+# Crear la función
+empieza_con <- function(secuencia, prefijo) {
+  inicio <- substr(secuencia, 1, nchar(prefijo))
+  return(inicio == prefijo)
+}
+
+# Probar con el prefijo "ATG"
+empieza_con("ATGCGT", "ATG")
+
+# Probar con el prefijo "TGA"
+empieza_con("ATGCGT", "TGA")
+```
+
+## Ejercicio 5.2
+
+```{r}
+# Modificar la función resumir_adn
+resumir_adn <- function(id, secuencia) {
+  secuencia <- toupper(secuencia)
+  bases <- strsplit(secuencia, split = "", fixed = TRUE)[[1]]
+  
+  list(
+    id = id,
+    longitud = nchar(secuencia),
+    conteo_gc = sum(bases %in% c("G", "C")),
+    proporcion_gc = sum(bases %in% c("G", "C")) / nchar(secuencia)
+  )
+}
+
+# Probar la función con una secuencia no vacía
+resultado <- resumir_adn("GEN_01", "ATGCGTAA")
+
+# Mostrar los resultados
+resultado
+```
+
+## Ejercico 5.3
+
+```{r}
+# Crear la función para revisar las secuencias
+revisar_secuencias <- function(secuencias) {
+  resultado <- logical(length(secuencias))
+  
+  for (i in seq_along(secuencias)) {
+    secuencia <- secuencias[i]
+    
+    if (is.na(secuencia)) {
+      resultado[i] <- FALSE
+    } else {
+      resultado[i] <- grepl("^[ACGT]+$", toupper(secuencia))
+    }
+  }
+  
+  return(resultado)
+}
+
+# Crear la función para clasificar las secuencias
+clasificar_secuencias <- function(secuencias) {
+  resultado <- revisar_secuencias(secuencias)
+  
+  list(
+    validas = secuencias[resultado],
+    invalidas = secuencias[!resultado]
+  )
+}
+
+# Probar la función
+secuencias <- c("ATGCGT", "ACNTGA", "ttacga", NA)
+
+# Mostrar los resultados
+clasificar_secuencias(secuencias)
+```
+
+## Ejercicio 5.4
+
+```{r}
+# Crear los vectores
+ids <- c("seq_01", "seq_02", "seq_03", "seq_04")
+secuencias <- c("ATGCGT", "ACNTGA", "GGCCAA", "TTTAAA")
+
+# Crear la función para revisar las secuencias
+revisar_secuencias <- function(secuencias) {
+  resultado <- logical(length(secuencias))
+  
+  for (i in seq_along(secuencias)) {
+    secuencia <- secuencias[i]
+    
+    if (is.na(secuencia)) {
+      resultado[i] <- FALSE
+    } else {
+      resultado[i] <- grepl("^[ACGT]+$", toupper(secuencia))
+    }
+  }
+  
+  return(resultado)
+}
+
+# Crear la función para generar el reporte
+crear_reporte_secuencias <- function(ids, secuencias) {
+  
+  # Comprobar que los argumentos sean correctos
+  if (!is.character(ids) || !is.character(secuencias) ||
+      length(ids) != length(secuencias)) {
+    stop("Los argumentos deben ser vectores de caracteres de igual longitud")
+  }
+  
+  # Identificar las secuencias válidas
+  valida <- revisar_secuencias(secuencias)
+  
+  # Calcular las longitudes
+  longitud <- nchar(secuencias)
+  
+  # Asignar NA a las longitudes inválidas
+  longitud[!valida] <- NA
+  
+  # Hacer el data frame
+  reporte <- data.frame(
+    id = ids,
+    secuencia = secuencias,
+    longitud = longitud,
+    valida = valida
+  )
+  
+  return(reporte)
+}
+
+# Probar la función
+resultado <- crear_reporte_secuencias(ids, secuencias)
+
+# Mostrar el resultado
+resultado
+```
+
+# Ejercicios 6
+
+## Ejercicio 6.1
+
+```{r}
+# Definir los datos de entrada
+ids <- c("seq_01", "seq_02", "seq_03", "seq_04")
+secuencias <- c("ATGCGT", "ACNTGA", "GGCCAA", "TTTAAA")
+
+# Verificar que ambos vectores tengan la misma longitud
+stopifnot(length(ids) == length(secuencias))
+
+# Calcular las longitudes de las secuencias
+longitudes <- nchar(secuencias)
+
+# Crear la tabla de resultados
+resultado <- data.frame(
+  id = ids,
+  longitud = longitudes
+)
+
+# Mostrar el resultado
+print(resultado)
+```
+
+# Ejercicios 7
+
+## Ejercicio 7.1
+
+```{r}
+# Definir la ruta del archivo
+archivo <- "C:/Users/torre/OneDrive/Documents/Rpracticas/datos_sesion_02_blast/blast_separador_incorrecto.csv"
+
+# Comprobar que el archivo existe
+file.exists(archivo)
+
+# Mostrar las primeras tres líneas
+readLines(archivo, n = 3)
+
+# Comprobar el separador real
+datos <- read.delim(archivo)
+
+# Mostrar los nombres de las columnas
+names(datos)
+
+# El archivo utiliza tabulaciones (\t) como separador, aunque tenga extensión
+#.csv. Por ejemplo "query_id\tsubject_id\tpident\tlength\tevalue\tbitscore"
+```
+
+## Ejercicio 7.2
+
+```{r}
+# Cargar la librería readr
+library(readr)
+
+# Definir las rutas de los archivos
+archivo_metadata <- "C:/Users/torre/OneDrive/Documents/Rpracticas/datos_sesion_02_blast/metadata_secuencias.csv"
+archivo_blast <- "C:/Users/torre/OneDrive/Documents/Rpracticas/datos_sesion_02_blast/blast_comentarios.tsv"
+
+# Importar metadata conservando codigo_muestra como texto
+metadata <- readr::read_csv(
+  archivo_metadata,
+  col_types = readr::cols(codigo_muestra = readr::col_character()),
+  show_col_types = FALSE
+)
+
+# Importar BLAST ignorando las líneas de comentarios
+blast <- readr::read_tsv(
+  archivo_blast,
+  comment = "#",
+  show_col_types = FALSE
+)
+
+# Comprobar la clase de cada objeto
+class(metadata)
+class(blast)
+
+# Mostrar las primeras filas de cada tabla
+head(metadata)
+head(blast)
+```
+
+## Ejercicio 7.3
+
+```{r}
+# Importar el archivo de resultados BLAST
+library(readr)
+
+blast <- readr::read_tsv(
+  "C:/Users/torre/OneDrive/Documents/Rpracticas/datos_sesion_02_blast/resultados_blast.tsv",
+  show_col_types = FALSE
+)
+
+# ¿Cuántos registros y columnas tiene la tabla?
+dim(blast)
+# La tabla tiene 20 registros y 6 columnas.
+
+# ¿Cuántos query_id diferentes aparecen?
+length(unique(blast$query_id))
+# Aparecen 8 identificadores diferentes.
+
+# ¿Cuántos resultados tiene cada consulta?
+table(blast$query_id)
+# seq01: 3, seq02: 2, seq03: 4, seq04: 1, seq05: 3, seq06: 2, seq07: 3 y seq08: 2.
+
+# ¿Qué filas tienen pident mayor o igual a 95?
+blast[blast$pident >= 95, ]
+# Son 3 filas: dos de seq03 (97.8% y 99%) y una de seq07 (95.7%).
+
+# ¿Hay valores faltantes?
+anyNA(blast)
+# No
+
+# Mostrar cuántos valores faltantes hay por columna
+colSums(is.na(blast))
+# Ninguno
+```
+
+## Ejercicio 7.4
+
+```{r}
+# Cargar la librería readr
+library(readr)
+
+# Definir la ruta del archivo
+archivo <- "C:/Users/torre/OneDrive/Documents/Rpracticas/datos_sesion_02_blast/blast_separador_incorrecto.csv"
+
+# Importar incorrectamente con read_csv()
+mal <- readr::read_csv(archivo, show_col_types = FALSE)
+
+# Comprobar los nombres de las columnas
+names(mal)
+
+# Revisar las primeras líneas del archivo
+readLines(archivo, n = 3)
+
+# Corregir la importación usando read_tsv()
+bien <- readr::read_tsv(archivo, show_col_types = FALSE)
+
+# Comprobar las columnas correctamente importadas
+names(bien)
+
+# Mostrar las primeras filas
+head(bien)
+
+# ¿Significa que el archivo contiene una única variable? Explica cómo comprobarlo
+# y corrige la importación
+
+# No significa que el archivo tenga una sola variable, sino que se utilizó un separador 
+# incorrecto. Podemos comprobarlo con readLines(), donde se observa que los datos están 
+# separados por tabulaciones. Para corregirlo usamos read_tsv() en lugar de 
+# read_csv(), y así obtenemos las seis columnas originales.
+```
+
+## Ejercicio 7.5
+
+```{r}
+# Definir la ruta del archivo FASTA
+archivo <- "C:/Users/torre/OneDrive/Documents/Rpracticas/datos_sesion_02_blast/secuencias.fasta"
+
+# Leer las líneas del archivo
+lineas <- readLines(archivo)
+
+# Identificar únicamente los encabezados
+encabezados <- grep("^>", lineas, value = TRUE)
+
+# Contar cuántas entradas FASTA contiene
+length(encabezados)
+
+# Mostrar únicamente los encabezados
+encabezados
+# El archivo contiene 8 entradas FASTA
+```
+
+## Ejercicio 7.6
+
+```{r}
+# Exploración de datos bioinformáticos
+
+# Cargar la librería
+library(readr)
+
+# Definir las rutas de los archivos
+archivo_blast <- "C:/Users/torre/OneDrive/Documents/Rpracticas/datos_sesion_02_blast/resultados_blast.tsv"
+archivo_metadata <- "C:/Users/torre/OneDrive/Documents/Rpracticas/datos_sesion_02_blast/metadata_secuencias.csv"
+archivo_fasta <- "C:/Users/torre/OneDrive/Documents/Rpracticas/datos_sesion_02_blast/secuencias.fasta"
+
+# Comprobar que los tres archivos existen
+file.exists(archivo_blast)
+file.exists(archivo_metadata)
+file.exists(archivo_fasta)
+
+# Importar las tablas con readr
+blast <- readr::read_tsv(
+  archivo_blast,
+  show_col_types = FALSE
+)
+
+metadata <- readr::read_csv(
+  archivo_metadata,
+  col_types = readr::cols(codigo_muestra = readr::col_character()),
+  show_col_types = FALSE
+)
+
+# Mostrar dimensiones, nombres y tipos de columnas
+dim(blast)
+dim(metadata)
+
+names(blast)
+names(metadata)
+
+str(blast)
+str(metadata)
+
+# Identificar los query_id diferentes
+unique(blast$query_id)
+
+# Contar cuántos query_id distintos hay
+length(unique(blast$query_id))
+
+# Contar los resultados por consulta
+table(blast$query_id)
+
+# Mostrar las filas con pident mayor o igual a 90
+blast[blast$pident >= 90, ]
+
+# Este filtro muestra los alineamientos que tienen
+# un porcentaje de identidad de al menos 90%.
+
+# Leer el archivo FASTA
+lineas <- readLines(archivo_fasta)
+
+# Identificar los encabezados
+encabezados <- grep("^>", lineas, value = TRUE)
+
+# Contar los encabezados
+length(encabezados)
+
+# Mostrar los encabezados
+encabezados
+
+# Comprobar si hay valores faltantes
+anyNA(blast)
+anyNA(metadata)
+
+# Contar los valores faltantes por columna
+colSums(is.na(blast))
+colSums(is.na(metadata))
+
+
+### Tres observaciones sobre los datos ###
+
+# 1. La tabla BLAST tiene 20 registros y 6 columnas, contiene 8 identificadores 
+# query_id diferentes.
+
+# 2. No todas las consultas tienen la misma cantidad de resultados. Algunas 
+# aparecen más veces que otras.
+
+# 3. El archivo FASTA contiene 8 encabezados y la tabla BLAST no presenta 
+# valores faltantes.
+```
+
+# Ejercicios 8
+
+## Ejercicio 8.1
+
+```{r}
+library(readr)
+library(dplyr)
+
+datos <- read_csv(
+  "C:/Users/torre/OneDrive/Documents/Rpracticas/datos_sesion_02_blast/expresion_genica_estres.csv",
+  show_col_types = FALSE
+)
+
+glimpse(datos)
+
+#Primero calcular el promedio por gene_id y condicion
+promedios <- datos %>% #datos es la tabla original y %>% la pasa a la siguiente función
+  group_by(gene_id, condicion) %>% #group_by agrupa los datos por gene y condición y %>% los pasa a la siguiente función
+  summarise(promedio = mean(conteo), .groups = "drop") #calcula el promedio de cada grupo
+
+promedios
+
+#Después vamos a organizar los promedios para compararlos
+library(tidyr)
+comparacion <- promedios %>% #toma los promedios que nos dio antes y los pasa a la siguiente función
+  pivot_wider( #convertir filas en columnas 
+    names_from = condicion, #Toma los valores de la columna condicion y los convierte en nombres de nuevas columnas
+    values_from = promedio #«Toma los números de la columna promedio y colócalos en las nuevas columnas correspondientes».
+  )
+
+comparacion
+
+#Calcular la razón entre el promedio en Estrés y el promedio en Control
+comparacion <- comparacion %>%
+  mutate(razon = Estres / Control)
+
+comparacion
+
+#Identificar los cinco genes con mayor aumento relativo y muestra su anotación 
+#funcional.
+top5 <- comparacion %>%
+  filter(is.finite(razon)) %>% #is.finite(razon) comprueba si cada valor de la columna razon es un número finito.
+  arrange(desc(razon)) %>% #arrange() ordena las filas y desc() indica que queremos ordenarlas de mayor a menor.
+  slice_head(n = 5) %>% #selecciona las primeras filas de una tabla (n = 5 = 5 filas)
+  left_join( #sirve para que juntemos los datos de las tablas
+    datos %>% distinct(gene_id, funcion), # Buscamos la funcion de cada gen sin repetir
+    by = "gene_id" # Unimos las tablas usando el identificador del gen
+  )
+
+top5
+
+# ¿Un gen con un aumento relativo grande necesariamente presenta un conteo alto de lecturas?
+
+# No necesariamente porque el aumento relativo compara el conteo promedio en estrés con el
+# de control. Un gen puede tener un aumento relativo muy grande aunque sus conteos sean bajos, 
+# siempre que en Control tenga un valor mucho menor.
+```
+
+## Ejercicio 8.2
+
+```{r}
+# Calcular el conteo promedio de cada gen considerando todas las muestras
+
+promedios_genes <- datos %>%  # Tomamos la tabla original y pasamos los datos a la siguiente función
+  group_by(gene_id, funcion) %>%  # Agrupamos los datos por gen y por su función
+  summarise(promedio = mean(conteo), .groups = "drop") # Calculamos el promedio de cada gen y quitamos la agrupación
+
+promedios_genes
+
+# Identificar los 15 genes con mayor conteo promedio
+top15 <- promedios_genes %>%  # Tomamos la tabla con los promedios
+  arrange(desc(promedio)) %>%  # Ordenamos los genes de mayor a menor promedio
+  slice_head(n = 15)  # Seleccionamos únicamente las primeras 15 filas
+
+top15
+
+# Determinar cuántos genes pertenecen a cada categoría funcional
+frecuencias <- top15 %>%  # Tomamos los 15 genes seleccionados
+  group_by(funcion) %>%  # Agrupamos los genes según su categoría funcional
+  summarise(cantidad = n(), .groups = "drop") # Contamos cuántos genes hay en cada categoría y quitamos la agrupación
+
+frecuencias
+
+# Ordenar las categorías funcionales de mayor a menor frecuencia
+frecuencias <- frecuencias %>%  # Tomamos la tabla con las frecuencias
+  arrange(desc(cantidad))  # Ordenamos las categorías de la más frecuente a la menos frecuente
+
+frecuencias
+
+# ¿La categoría funcional más frecuente entre estos 15 genes necesariamente es la
+# más importante para la bacteria?
+
+# No necesariamente porque que una categoría tenga más genes entre los 15 con mayor
+# conteo promedio no significa que sea la más importante. Puede haber otras funciones
+# representadas por menos genes que sean esenciales para la bacteria. Además, el 
+# conteo de lecturas no nos dice directamente qué tan importante es una función biológica.
+```
+
+# Ejercicio 9
+## Ejercicio 9.1
+
+```{r}
+# Sin construir otra función, revisa generos_5 y responde:
+
+library(dplyr)
+library(readr)
+library(tidyr)
+
+# Primero hay que cargar los datos
+conteos_riz <-  data.table::fread("conteos_taxonomia_rizosfera.tsv")
+metadata_riz <- data.table::fread("metadata_rizosfera.csv")
+
+# Después hay que limpiar los datos quitando los prefijos
+niveles <- c(
+  "kingdom", "phylum", "class", "order",
+  "family", "genus", "species"
+)
+
+conteos_limpios <- conteos_riz %>%
+  mutate(
+    across(
+      all_of(niveles),
+      ~ na_if(sub("^[a-z]__", "", .x), "")
+    )
+  )
+# Luego tenemos que pasar la tabla de ancho a largo
+ids_muestras <- metadata_riz$sample_id
+
+conteos_largos <- conteos_limpios %>%
+  pivot_longer(
+    cols = all_of(ids_muestras),
+    names_to = "sample_id",
+    values_to = "conteo"
+  )
+# Unimos con metadatos
+datos_riz <- conteos_largos %>%
+  left_join(
+    metadata_riz %>% select(sample_id, host_name, country, year),
+    by = "sample_id",
+    relationship = "many-to-one"
+  )
+
+head(datos_riz)
+
+
+
+#' Preparar abundancias relativas
+#'
+#' Calcula la abundancia relativa de los taxones por muestra y agrupa los que
+#' están por debajo del umbral.
+#'
+#' @param tabla Tabla con los conteos y metadatos.
+#' @param nivel Nivel taxonómico que queremos analizar.
+#' @param umbral Abundancia mínima para conservar un taxón.
+#' @return Tabla con las abundancias relativas por muestra.
+#' @examples
+#' preparar_abundancias(datos_riz, "genus", 0.05)
+
+preparar_abundancias <- function(tabla, nivel = "genus", umbral = 0.05) {
+
+  # Verificar que los argumentos sean válidos
+  niveles_validos <- c(
+    "kingdom", "phylum", "class", "order",
+    "family", "genus", "species"
+  )
+
+  stopifnot(
+    nivel %in% niveles_validos,
+    is.numeric(umbral), length(umbral) == 1,
+    !is.na(umbral), umbral >= 0, umbral <= 1
+  )
+
+  # Asignar una etiqueta según el nivel taxonómico
+  etiqueta_otros <- if (nivel == "phylum") {
+    "Filos < 5%"
+  } else if (nivel == "genus") {
+    "Géneros < 5%"
+  } else {
+    "Taxones < 5%"
+  }
+
+  tabla %>%
+
+    # Seleccionar el nivel taxonómico
+    mutate(
+      taxon = .data[[nivel]],
+      taxon = if_else(is.na(taxon) | taxon == "",
+                      "Sin clasificar", taxon)
+    ) %>%
+
+    # Sumar los conteos por muestra y taxón
+    group_by(sample_id, host_name, taxon) %>%
+    summarise(conteo = sum(conteo), .groups = "drop") %>%
+
+    # Calcular la abundancia relativa
+    group_by(sample_id) %>%
+    mutate(abundancia_relativa = conteo / sum(conteo)) %>%
+    ungroup() %>%
+
+    # Agrupar los taxones menos abundantes
+    mutate(
+      taxon_final = if_else(
+        abundancia_relativa < umbral,
+        etiqueta_otros,
+        taxon
+      )
+    ) %>%
+
+    # Sumar las abundancias de los taxones agrupados
+    group_by(sample_id, host_name, taxon_final) %>%
+    summarise(
+      abundancia_relativa = sum(abundancia_relativa),
+      .groups = "drop"
+    )
+}
+
+generos_5 <- preparar_abundancias(datos_riz, "genus", 0.05)
+head(generos_5)
+filos_5 <- preparar_abundancias(datos_riz, "phylum", 0.05)
+familias_1 <- preparar_abundancias(datos_riz, "family", 0.01)
+
+
+
+#¿Qué representa una fila de generos_5?
+
+#Representa la abundancia relativa de un género o grupo de géneros en una muestra #determinada
+
+#¿Por qué un mismo género puede aparecer individualmente en una muestra y dentro de #Otros en otra?
+
+#Porque su abundancia relativa varía entre muestras. Si es menor al 5 %, se agrupa en #Otros; sino, aparece individualmente.
+
+#Si construimos una gráfica de barras apiladas al 100 %, ¿cuánto deben sumar las abundancias relativas de c#¿Qué columna nos permite comparar las muestras según la planta hospedera? ¿De dónde proviene?
+
+#deben sumar 1, proviene de la columna host_name, que proviene de los metadatos y se incorporó a la tabla mediante left_join().
+
+# Comprobar la suma de abundancias por muestra
+generos_5 %>%
+  group_by(sample_id) %>%
+  summarise(total = sum(abundancia_relativa), .groups = "drop")
+
+```
+
+#Ejercicio 10
+#Ejercicio 10.1
+
+```{r}
+totales_muestra <- datos_riz %>%
+  group_by(sample_id) %>%
+  summarise(total_lecturas = sum(conteo), .groups = "drop")
+
+stopifnot(all(totales_muestra$total_lecturas > 0))
+head(totales_muestra)
+
+profundidad <- totales_muestra %>%
+  left_join(
+    metadata_riz %>%
+      select(sample_id, host_name, country, crop_system),
+    by = "sample_id",
+    relationship = "one-to-one"
+  )
+
+stopifnot(!anyNA(profundidad$host_name))
+
+glimpse(profundidad)
+
+
+library(ggplot2)
+
+ggplot(profundidad, aes(x = total_lecturas)) +
+  geom_histogram(bins = 12, fill = "#367A90", color = "white") +
+  labs(title = "Distribución de los conteos totales",
+       x = "Lecturas contabilizadas por muestra", y = "Número de muestras") +
+  theme_minimal(base_size = 12)
+
+ggplot(
+  profundidad,
+  aes(
+    x = reorder(host_name, total_lecturas, FUN = median),
+    y = total_lecturas
+  )
+) +
+  geom_boxplot(fill = "#83B7C9") +
+  scale_y_log10(labels = scales::label_comma()) +
+  coord_flip() +
+  labs(
+    title = "Profundidad de lectura según la planta hospedera",
+    x = "Planta hospedera",
+    y = "Lecturas contabilizadas (escala logarítmica)"
+  ) +
+  theme_minimal(base_size = 12)
+
+
+
+
+
+
+
+```
+
++ ¿El histograma y el diagrama de caja muestran el número de lecturas de cada muestra identificada?
+
+No, muestran cómo se distribuyen las lecturas, pero no identifican individualmente cada muestra.
+
++ ¿Por qué resulta útil utilizar una escala logarítmica en esta figura?
+
+Porque hay valores muy grandes y muy pequeños, y esta escala permite compararlos más fácilmente.
+
++  ¿Podemos concluir que las plantas con mayor profundidad de lectura tienen una mayor abundancia de microorganismos?
+
+No, porque tener más lecturas no significa necesariamente que haya más microorganismos, también depende de cómo se realizó la secuenciación.
+
+# Ejercicio 10.2 
+Utilizando generos_5 y metadata_riz:
+
+Identifica las plantas hospederas que tienen al menos 5 muestras.
+Conserva únicamente las muestras correspondientes a esas plantas.
+Construye una gráfica de barras apiladas de abundancia relativa por género con ggplot2, utilizando facet_wrap() para comparar las plantas hospederas.
+
+```{r}
+# Contar las muestras por planta hospedera
+hospederos_elegidos <- metadata_riz %>%
+  count(host_name, name = "n_muestras", sort = TRUE) %>%
+  filter(n_muestras >= 5)
+
+hospederos_elegidos
+
+# Filtrar los géneros de las plantas seleccionadas
+generos_seleccionados <- generos_5 %>%
+  filter(host_name %in% hospederos_elegidos$host_name)
+
+head(generos_seleccionados)
+
+# Colocar los géneros menores al 5% al final
+orden_generos <- c(
+  sort(setdiff(unique(generos_5$taxon_final), "Géneros < 5%")),
+  "Géneros < 5%"
+)
+
+# Gráfica de abundancia relativa por género
+p_generos <- ggplot(generos_seleccionados,
+  aes(x = sample_id, y = abundancia_relativa, fill = taxon_final)) +
+  geom_col() +
+  scale_fill_viridis_d(option = "viridis",
+                       breaks = orden_generos) +
+  facet_wrap(~ host_name, scales = "free_x") +
+  scale_y_continuous(labels = function(x) paste0(round(100 * x), "%")) +
+  labs(title = "Composición por género según planta hospedera",
+       x = "Muestra",
+       y = "Abundancia relativa",
+       fill = "Género") +
+  theme_minimal(base_size = 12) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 7),
+        legend.position = "bottom")
+
+p_generos
+```
+
+¿Qué diferencias observas en la composición taxonómica entre las plantas? 
+
+Las plantas tienen diferentes proporciones de géneros, pero en todas predominan los géneros agrupados en la categoría de menos del 5%
+
+¿Todas las muestras de una misma planta presentan composiciones similares?
+
+No del todo, porque aunque sean de la misma planta, algunos géneros son más abundantes en unas muestras que en otras.
+
+## Ejercicio 10.3
+
+Utilizando filos_5 y metadata_riz:
+
++ Identifica los países que tienen al menos 5 muestras.
++ Conserva únicamente las muestras correspondientes a esos países.
++ Construye una gráfica de barras apiladas de abundancia relativa por filo con ggplot2, utilizando facet_wrap() para comparar los países.
++ Para discutir: ¿Qué diferencias observas en la composición taxonómica entre los países? ¿Las muestras de un mismo país presentan composiciones similares?
+
+```{r}
+# Contar las muestras por país
+paises_elegidos <- metadata_riz %>%
+  count(country, name = "n_muestras", sort = TRUE) %>%
+  filter(n_muestras >= 5)
+
+paises_elegidos
+
+# Agregar el país y conservar los países seleccionados
+filos_seleccionados <- filos_5 %>%
+  left_join(
+    metadata_riz %>% select(sample_id, country),
+    by = "sample_id"
+  ) %>%
+  filter(country %in% paises_elegidos$country)
+
+head(filos_seleccionados)
+
+# Colocar los filos menores al 5% al final
+orden_filos <- c(
+  sort(setdiff(unique(filos_5$taxon_final), "Filos < 5%")),
+  "Filos < 5%"
+)
+
+# Gráfica de abundancia relativa por filo
+p_filos <- ggplot(filos_seleccionados,
+  aes(x = sample_id, y = abundancia_relativa, fill = taxon_final)) +
+  geom_col() +
+  scale_fill_viridis_d(option = "viridis",
+                       breaks = orden_filos) +
+  facet_wrap(~ country, scales = "free_x") +
+  scale_y_continuous(labels = function(x) paste0(round(100 * x), "%")) +
+  labs(title = "Composición por filo según el país",
+       x = "Muestra",
+       y = "Abundancia relativa",
+       fill = "Filo") +
+  theme_minimal(base_size = 12) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 7),
+        legend.position = "bottom")
+
+p_filos
+```
+
+¿Qué diferencias observas en la composición taxonómica entre los países?
+
+En México y Países Bajos predomina Pseudomonadota, mientras que en China y Sudáfrica hay una mayor proporción de Actinomycetota en varias muestras.
+
+¿Las muestras de un mismo país presentan composiciones similares?
+
+Sí, en general son parecidas, pero las proporciones de los filos varían entre muestras, aunque sean del mismo país.
+
+# Ejercicio 11
+## Pregunta 11.1
+
+Si compartimos únicamente un archivo HTML con figuras, ¿estamos compartiendo necesariamente un análisis reproducible?
+
+No porque cuando lo renderizo a HTML y lo subo a github solo aparece un código raro y nada reproducible.
+
+## Pregunta 11.2
+
+Queremos que el HTML muestre una gráfica pero no las instrucciones de R que la producen. ¿Qué opción utilizaríamos?
+
+echo: false
+
+## Reporte 11.3
+
+```{r}
+#| echo: false
+
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+
+metadata_riz
+totales_muestra
+generos_5
+filos_5 
+
+# Número de muestras por planta
+resumen_hospederos <- metadata_riz %>%
+  count(host_name, name = "numero_muestras") %>%
+  arrange(desc(numero_muestras))
+
+knitr::kable(
+  resumen_hospederos,
+  col.names = c("Planta hospedera", "Número de muestras"),
+  caption = "Número de muestras por planta hospedera"
+)
+
+# Grafica profundidad de lectura 
+
+#| fig-width: 10
+#| fig-height: 5
+
+profundidad <- totales_muestra %>%
+  left_join(
+    metadata_riz %>% select(sample_id, host_name),
+    by = "sample_id"
+  )
+
+ggplot(profundidad, aes(x = host_name, y = total_lecturas)) +
+  geom_boxplot(fill = "#5A9A91", alpha = 0.8) +
+  coord_flip() +
+  labs(
+    x = "Planta hospedera",
+    y = "Total de lecturas",
+    title = "Profundidad de lectura por planta"
+  ) +
+  theme_minimal()
+
+#Se observa que la cantidad de lecturas varía entre plantas e incluso entre muestras de una misma planta. Sin embargo, tener más lecturas no significa necesariamente que haya más microorganismos
+
+# Grafica filos
+
+#| fig-width: 12
+#| fig-height: 8
+
+orden_filos <- c(
+  sort(setdiff(unique(filos_5$taxon_final), "Filos < 5%")),
+  "Filos < 5%"
+)
+
+ggplot(filos_5,
+       aes(x = sample_id,
+           y = abundancia_relativa,
+           fill = taxon_final)) +
+  geom_col() +
+  scale_fill_viridis_d(breaks = orden_filos) +
+  facet_wrap(~ host_name, scales = "free_x") +
+  scale_y_continuous(labels = scales::label_percent()) +
+  labs(
+    x = "Muestra",
+    y = "Abundancia relativa",
+    fill = "Filo",
+    title = "Composición taxonómica de la rizosfera"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90,
+                                  hjust = 1,
+                                  size = 6),
+        legend.position = "bottom")
+
+#La composición taxonómica varía entre las plantas, ya que no todas presentan las mismas proporciones de filos. También existen diferencias entre muestras de una misma planta.
+```
+
++ ¿Qué diferencias o semejanzas se observan entre plantas?
+
+Las plantas pueden compartir varios filos, pero en diferentes proporciones.
+
++ ¿Qué limitaciones tienen las comparaciones?
+
+No todas las plantas tienen la misma cantidad de muestras y estas pueden provenir de diferentes países, estudios y protocolos de secuenciación.
+
++ ¿Qué análisis adicional sería necesario para sustentar una explicación biológica?
+
+Sería necesario realizar pruebas estadísticas para saber si las diferencias observadas son significativas.
+
++ Conclusiones
+
+Se observaron diferencias en la profundidad de lectura y en la composición taxonómica de las muestras. Sin embargo, no podemos asegurar que estas diferencias se deban únicamente a la planta hospedera.
